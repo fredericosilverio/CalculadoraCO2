@@ -4,7 +4,7 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
     // Referências aos elementos do DOM
-    const form = document.getElementById('emission-form');
+    const form = document.getElementById('calculator-form');
     const loading = document.getElementById('loading');
 
     /**
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const origin = document.getElementById('origin').value;
         const destination = document.getElementById('destination').value;
         const distance = parseFloat(document.getElementById('distance').value);
-        const mode = document.getElementById('transport-mode').value;
+        const mode = document.querySelector('input[name="transport"]:checked').value;
 
         // Validação básica
         if (!distance || distance <= 0) {

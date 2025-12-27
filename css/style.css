@@ -121,7 +121,8 @@ body {
 .calculator-form,
 .results,
 .comparison,
-.carbon-credits {
+.carbon-credits,
+.loading {
     background: var(--bg-glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -339,7 +340,8 @@ body {
 /* Results Sections */
 .results,
 .comparison,
-.carbon-credits {
+.carbon-credits,
+.loading {
     animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -530,6 +532,32 @@ body {
 .carbon-credits__button:hover {
     background-color: var(--primary-dark);
     transform: scale(1.02);
+}
+
+/* Loading Spinner */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    text-align: center;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--accent);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Animations */
