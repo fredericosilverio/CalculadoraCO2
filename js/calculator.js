@@ -1,9 +1,30 @@
 /**
  * Calculator - Lógica de Negócio da Calculadora
  * Realiza todos os cálculos de emissão, comparações e estimativas de crédito
+ * 
+ * Este módulo contém apenas lógica pura (sem side effects),
+ * facilitando testes unitários e manutenção.
  */
 
 const Calculator = {
+    /**
+     * Valida se o modo de transporte existe na configuração
+     * @param {string} mode - Identificador do modo
+     * @returns {boolean} True se válido
+     */
+    isValidMode: function (mode) {
+        return mode in CONFIG.EMISSION_FACTORS;
+    },
+
+    /**
+     * Obtém o fator de emissão para um modo, com fallback seguro
+     * @param {string} mode - Identificador do modo
+     * @returns {number} Fator de emissão (0 se inválido)
+     */
+    getEmissionFactor: function (mode) {
+        return CONFIG.EMISSION_FACTORS[mode] ?? 0;
+    },
+
     /**
      * Calcula a emissão de CO2 para um único modo de transporte
      * Fórmula: Distância (km) * Fator de Emissão (kg CO2/km)
@@ -13,7 +34,12 @@ const Calculator = {
      * @returns {number} Emissão total em kg de CO2
      */
     calculateEmission: function (mode, distance) {
-        const factor = CONFIG.EMISSION_FACTORS[mode];
+        // Validação de entrada
+        if (typeof distance !== 'number' || distance < 0 || isNaN(distance)) {
+            return 0;
+        }
+
+        const factor = this.getEmissionFactor(mode);
         return distance * factor;
     },
 
@@ -22,14 +48,17 @@ const Calculator = {
      * Útil para gerar a tabela comparativa
      * 
      * @param {number} distance - Distância em quilômetros
-     * @returns {Array<Object>} Lista de objetos contendo ID e Emissão de cada modo
+     * @returns {Array<Object>} Lista ordenada de objetos contendo ID e Emissão de cada modo
      */
     calculateAllModes: function (distance) {
         const modes = Object.keys(CONFIG.TRANSPORT_MODES);
-        return modes.map(mode => ({
-            id: mode,
-            emission: this.calculateEmission(mode, distance)
-        })).sort((a, b) => a.emission - b.emission); // Ordena do menos poluente para o mais poluente
+
+        return modes
+            .map(mode => ({
+                id: mode,
+                emission: this.calculateEmission(mode, distance)
+            }))
+            .sort((a, b) => a.emission - b.emission); // Ordena do menos para mais poluente
     },
 
     /**
@@ -42,12 +71,14 @@ const Calculator = {
         const carEmission = this.calculateEmission('car', distance);
         const selectedEmission = this.calculateEmission(selectedMode, distance);
 
-        const savedKg = carEmission - selectedEmission;
-        const percentage = carEmission > 0 ? (savedKg / carEmission) * 100 : 0;
+        const savedKg = Math.max(0, carEmission - selectedEmission);
+        const percentage = carEmission > 0
+            ? ((savedKg / carEmission) * 100).toFixed(1)
+            : '0.0';
 
         return {
-            savedKg: Math.max(0, savedKg), // Nunca retorna valor negativo
-            percentage: Math.max(0, percentage).toFixed(1)
+            savedKg,
+            percentage
         };
     },
 
@@ -57,6 +88,9 @@ const Calculator = {
      * @returns {number} Créditos necessários (1 crédito = 1 tonelada de CO2)
      */
     calculateCarbonCredits: function (emissionKg) {
+        if (typeof emissionKg !== 'number' || emissionKg < 0 || isNaN(emissionKg)) {
+            return 0;
+        }
         return emissionKg / CONFIG.CARBON_CREDIT.KG_PER_CREDIT;
     },
 
@@ -66,13 +100,32 @@ const Calculator = {
      * @returns {Object} Faixa de preço {min, max, average} em Reais
      */
     estimateCreditPrice: function (credits) {
-        const minPrice = credits * CONFIG.CARBON_CREDIT.PRICE_MIN_BRL;
-        const maxPrice = credits * CONFIG.CARBON_CREDIT.PRICE_MAX_BRL;
+        if (typeof credits !== 'number' || credits < 0 || isNaN(credits)) {
+            return { min: 0, max: 0, average: 0 };
+        }
+
+        const { PRICE_MIN_BRL, PRICE_MAX_BRL } = CONFIG.CARBON_CREDIT;
+        const minPrice = credits * PRICE_MIN_BRL;
+        const maxPrice = credits * PRICE_MAX_BRL;
 
         return {
             min: minPrice,
             max: maxPrice,
             average: (minPrice + maxPrice) / 2
         };
+    },
+
+    /**
+     * Calcula o equivalente em árvores para compensação
+     * (Uma árvore absorve aproximadamente 22kg de CO2 por ano)
+     * @param {number} emissionKg - Total de CO2 emitido em kg
+     * @returns {number} Número de árvores necessárias
+     */
+    calculateTreeEquivalent: function (emissionKg) {
+        const KG_PER_TREE_PER_YEAR = 22;
+        if (typeof emissionKg !== 'number' || emissionKg < 0) {
+            return 0;
+        }
+        return Math.ceil(emissionKg / KG_PER_TREE_PER_YEAR);
     }
 };

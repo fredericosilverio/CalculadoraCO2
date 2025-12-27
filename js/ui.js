@@ -3,6 +3,23 @@
  * Responsável por renderizar resultados, formatar valores e gerenciar interações visuais
  */
 const UI = {
+    // ============================================
+    // CACHE DE ELEMENTOS (preenchido sob demanda)
+    // ============================================
+    _elementsCache: new Map(),
+
+    /**
+     * Obtém elemento do cache ou busca e armazena
+     * @param {string} id - ID do elemento
+     * @returns {HTMLElement|null} Elemento encontrado
+     */
+    getElement: function (id) {
+        if (!this._elementsCache.has(id)) {
+            this._elementsCache.set(id, document.getElementById(id));
+        }
+        return this._elementsCache.get(id);
+    },
+
     /**
      * Formata um número para o padrão brasileiro (pt-BR)
      * Ex: 1000.5 -> "1.000,5"
@@ -12,6 +29,9 @@ const UI = {
      * @returns {string} String formatada
      */
     formatNumber: function (value, decimals = 2) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return '0';
+        }
         return value.toLocaleString('pt-BR', {
             minimumFractionDigits: decimals,
             maximumFractionDigits: decimals
@@ -26,6 +46,9 @@ const UI = {
      * @returns {string} String formatada como moeda
      */
     formatCurrency: function (value) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return 'R$ 0,00';
+        }
         return value.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL'
@@ -37,7 +60,9 @@ const UI = {
      * @param {HTMLElement} element - O elemento a ser exibido
      */
     showElement: function (element) {
-        element.classList.remove('hidden');
+        if (element) {
+            element.classList.remove('hidden');
+        }
     },
 
     /**
@@ -45,7 +70,9 @@ const UI = {
      * @param {HTMLElement} element - O elemento a ser ocultado
      */
     hideElement: function (element) {
-        element.classList.add('hidden');
+        if (element) {
+            element.classList.add('hidden');
+        }
     },
 
     /**
@@ -53,7 +80,21 @@ const UI = {
      * @param {HTMLElement} element - O elemento alvo
      */
     scrollToElement: function (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    },
+
+    /**
+     * Escapa HTML para prevenir XSS
+     * @param {string} str - String a escapar
+     * @returns {string} String segura
+     */
+    escapeHTML: function (str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     },
 
     /**
@@ -61,16 +102,14 @@ const UI = {
      * Gera os cartões de informação com ícones e valores calculados
      * 
      * @param {Object} data - Objeto contendo os dados do cálculo
-     * @param {string} data.origin - Cidade de origem
-     * @param {string} data.destination - Cidade de destino
-     * @param {number} data.distance - Distância da rota em km
-     * @param {number} data.emission - Emissão total em kg CO2
-     * @param {string} data.mode - Identificador do modo de transporte (ex: 'car')
-     * @param {Object} [data.savings] - Dados de economia (se houver)
      */
     renderResults: function (data) {
-        const resultsContainer = document.getElementById('results-content');
+        const resultsContainer = this.getElement('results-content');
+        if (!resultsContainer) return;
+
         const modeData = CONFIG.TRANSPORT_MODES[data.mode];
+        const safeOrigin = this.escapeHTML(data.origin);
+        const safeDestination = this.escapeHTML(data.destination);
 
         let html = `
             <h2 class="section-title">Resultados da Emissão</h2>
@@ -81,7 +120,7 @@ const UI = {
                     <div class="results__card-icon">🗺️</div>
                     <div class="results__card-content">
                         <h3 class="results__card-title">Rota</h3>
-                        <p class="results__card-value">${data.origin} → ${data.destination}</p>
+                        <p class="results__card-value">${safeOrigin} → ${safeDestination}</p>
                     </div>
                 </div>
                 
@@ -122,7 +161,7 @@ const UI = {
                     <div class="results__card-content">
                         <h3 class="results__card-title">Economia vs Carro</h3>
                         <p class="results__card-value">${this.formatNumber(data.savings.savedKg)} kg</p>
-                        <p class="results__card-subtitle">${this.formatNumber(data.savings.percentage)}% menos emissões</p>
+                        <p class="results__card-subtitle">${this.formatNumber(parseFloat(data.savings.percentage))}% menos emissões</p>
                     </div>
                 </div>
             `;
@@ -130,7 +169,7 @@ const UI = {
 
         html += `</div>`;
         resultsContainer.innerHTML = html;
-        this.showElement(document.getElementById('results'));
+        this.showElement(this.getElement('results'));
     },
 
     /**
@@ -141,7 +180,8 @@ const UI = {
      * @param {string} selectedMode - ID do modo selecionado pelo usuário
      */
     renderComparison: function (modesArray, selectedMode) {
-        const comparisonContainer = document.getElementById('comparison-content');
+        const comparisonContainer = this.getElement('comparison-content');
+        if (!comparisonContainer) return;
 
         // Encontra a maior emissão para calcular as porcentagens das barras
         const maxEmission = Math.max(...modesArray.map(m => m.emission));
@@ -158,8 +198,8 @@ const UI = {
         modesArray.forEach(mode => {
             const config = CONFIG.TRANSPORT_MODES[mode.id];
             const isSelected = mode.id === selectedMode;
-            // Calcula a largura da barra em porcentagem (mínimo 10px para visibilidade)
-            const widthPercentage = (mode.emission / maxEmission) * 100;
+            // Calcula a largura da barra em porcentagem
+            const widthPercentage = maxEmission > 0 ? (mode.emission / maxEmission) * 100 : 0;
 
             html += `
                 <div class="comparison__row ${isSelected ? 'comparison__row--selected' : ''}">
@@ -192,7 +232,7 @@ const UI = {
         `;
 
         comparisonContainer.innerHTML = html;
-        this.showElement(document.getElementById('comparison'));
+        this.showElement(this.getElement('comparison'));
     },
 
     /**
@@ -200,15 +240,16 @@ const UI = {
      * Calcula e exibe quantos créditos seriam necessários para compensar a emissão
      * 
      * @param {Object} creditsData - Dados calculados sobre créditos
-     * @param {number} creditsData.credits - Quantidade de créditos necessários
-     * @param {Object} creditsData.price - Estimativas de preço {min, max, average}
      */
     renderCarbonCredits: function (creditsData) {
-        const creditsContainer = document.getElementById('carbon-credits-content');
+        const creditsContainer = this.getElement('carbon-credits-content');
+        const carbonCreditsSection = this.getElement('carbon-credits');
+
+        if (!creditsContainer) return;
 
         // Se a emissão for muito baixa, não sugerimos compra de crédito
         if (creditsData.credits < 0.001) {
-            this.hideElement(document.getElementById('carbon-credits'));
+            this.hideElement(carbonCreditsSection);
             return;
         }
 
@@ -248,13 +289,20 @@ const UI = {
                     A compensação de carbono é uma forma de neutralizar suas emissões investindo em projetos 
                     ambientais como reflorestamento, energia renovável ou captura de metano.
                 </p>
-                <a href="https://www.google.com/search?q=comprar+creditos+de+carbono+brasil" target="_blank" class="btn btn-outline">
+                <a href="https://www.google.com/search?q=comprar+creditos+de+carbono+brasil" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
                     Saiba onde compensar ↗
                 </a>
             </div>
         `;
 
         creditsContainer.innerHTML = html;
-        this.showElement(document.getElementById('carbon-credits'));
+        this.showElement(carbonCreditsSection);
+    },
+
+    /**
+     * Limpa o cache de elementos (útil para testes)
+     */
+    clearCache: function () {
+        this._elementsCache.clear();
     }
 };
