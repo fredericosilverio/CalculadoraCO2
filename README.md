@@ -4,7 +4,7 @@ Uma aplicação web moderna e interativa para calcular a pegada de carbono de vi
 
 ![Preview do Projeto](https://placehold.co/800x400/e0f2f1/10b981?text=Calculadora+CO2)
 
-## ✨ Funcionalidades
+## ✨✨ Funcionalidades
 
 *   **Busca Inteligente de Cidades**: Integração com a API **Nominatim (OpenStreetMap)** para sugerir cidades brasileiras enquanto você digita.
 *   **Cálculo Automático de Distância**: Determina a distância de condução real entre duas cidades usando a API **OSRM**, eliminando a necessidade de tabelas fixas.
