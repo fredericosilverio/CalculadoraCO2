@@ -172,8 +172,8 @@ const UI = {
                     <!-- Barra de Progresso e Valor -->
                     <div class="comparison__bar-container">
                         <div class="comparison__bar" style="width: ${widthPercentage}%; background-color: ${config.color}"></div>
-                        <span class="comparison__value">${this.formatNumber(mode.emission)} kg</span>
                     </div>
+                    <span class="comparison__value">${this.formatNumber(mode.emission)} kg</span>
                 </div>
             `;
         });

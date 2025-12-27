@@ -675,3 +675,57 @@ body {
     margin-top: var(--spacing-md);
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
+/* Tooltip Styling for Comparison Chart */
+.comparison__row {
+    position: relative;
+    /* Context for absolute positioning */
+}
+
+.comparison__value {
+    position: absolute;
+    right: 0;
+    top: -25px;
+    /* Floats above the row */
+    background-color: var(--text);
+    color: var(--text-white);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    /* Prevents flickering if cursor touches it */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+/* Arrow for the tooltip */
+.comparison__value::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--text);
+}
+
+/* Show on hover with animation */
+.comparison__row:hover .comparison__value {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhancement for hover state on the row itself */
+.comparison__row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Keep selected styling dominant */
+.comparison__row.comparison__row--selected:hover {
+    background-color: #ecfdf5;
+}
