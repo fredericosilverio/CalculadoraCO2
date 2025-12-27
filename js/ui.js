@@ -112,14 +112,14 @@ const UI = {
         const safeDestination = this.escapeHTML(data.destination);
 
         let html = `
-            <h2 class="section-title">Resultados da Emissão</h2>
+            <h2 class="section-title">Análise de Impacto Ambiental</h2>
             
             <div class="results__grid">
                 <!-- Cartão da Rota -->
                 <div class="results__card">
                     <div class="results__card-icon">🗺️</div>
                     <div class="results__card-content">
-                        <h3 class="results__card-title">Rota</h3>
+                        <h3 class="results__card-title">Trajeto Analisado</h3>
                         <p class="results__card-value">${safeOrigin} → ${safeDestination}</p>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ const UI = {
                 <div class="results__card">
                     <div class="results__card-icon">📏</div>
                     <div class="results__card-content">
-                        <h3 class="results__card-title">Distância</h3>
+                        <h3 class="results__card-title">Distância Percorrida</h3>
                         <p class="results__card-value">${this.formatNumber(data.distance, 0)} km</p>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ const UI = {
                 <div class="results__card results__card--highlight">
                     <div class="results__card-icon">🌿</div>
                     <div class="results__card-content">
-                        <h3 class="results__card-title">Emissão de CO₂</h3>
+                        <h3 class="results__card-title">Emissão Total de CO₂</h3>
                         <p class="results__card-value results__card-value--large">${this.formatNumber(data.emission)} kg</p>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ const UI = {
                 <div class="results__card">
                     <div class="results__card-icon">${modeData.icon}</div>
                     <div class="results__card-content">
-                        <h3 class="results__card-title">Meio de Transporte</h3>
+                        <h3 class="results__card-title">Transporte Utilizado</h3>
                         <p class="results__card-value">${modeData.label}</p>
                     </div>
                 </div>
@@ -159,9 +159,9 @@ const UI = {
                 <div class="results__card results__card--success">
                     <div class="results__card-icon">✅</div>
                     <div class="results__card-content">
-                        <h3 class="results__card-title">Economia vs Carro</h3>
-                        <p class="results__card-value">${this.formatNumber(data.savings.savedKg)} kg</p>
-                        <p class="results__card-subtitle">${this.formatNumber(parseFloat(data.savings.percentage))}% menos emissões</p>
+                        <h3 class="results__card-title">Redução vs Carro</h3>
+                        <p class="results__card-value">${this.formatNumber(data.savings.savedKg)} kg economizados</p>
+                        <p class="results__card-subtitle">🌟 ${this.formatNumber(parseFloat(data.savings.percentage))}% menos emissões</p>
                     </div>
                 </div>
             `;
@@ -188,8 +188,8 @@ const UI = {
 
         let html = `
             <div class="comparison__header">
-                <h2 class="section-title">Comparativo de Emissões</h2>
-                <p class="section-subtitle">Veja como sua escolha se compara com outras opções</p>
+                <h2 class="section-title">Comparação entre Meios de Transporte</h2>
+                <p class="section-subtitle">Veja como sua escolha se compara com outras alternativas de mobilidade</p>
             </div>
             
             <div class="comparison__chart">
@@ -225,8 +225,7 @@ const UI = {
             <div class="comparison__tip">
                 <span class="comparison__tip-icon">💡</span>
                 <p class="comparison__tip-text">
-                    <strong>Dica:</strong> Escolher meios de transporte mais sustentáveis ajuda a reduzir 
-                    significativamente as emissões de CO₂ e contribui para um planeta mais saudável!
+                    <strong>Dica Sustentável:</strong> Optar por meios de transporte com menor emissão de CO₂ é uma das formas mais eficazes de contribuir para a redução do aquecimento global.
                 </p>
             </div>
         `;
@@ -254,18 +253,18 @@ const UI = {
         }
 
         const html = `
-            <h2 class="section-title">Créditos de Carbono</h2>
+            <h2 class="section-title">Compensação de Carbono</h2>
             
             <div class="carbon-credits__grid">
                 <!-- Cartão de Créditos Necessários -->
                 <div class="carbon-credits__card">
                     <div class="carbon-credits__card-header">
                         <span class="carbon-credits__icon">🌳</span>
-                        <h3 class="carbon-credits__card-title">Créditos Necessários</h3>
+                        <h3 class="carbon-credits__card-title">Créditos para Neutralização</h3>
                     </div>
                     <div class="carbon-credits__card-body">
                         <p class="carbon-credits__value">${this.formatNumber(creditsData.credits, 4)}</p>
-                        <p class="carbon-credits__helper">1 crédito = 1.000 kg CO₂</p>
+                        <p class="carbon-credits__helper">1 crédito de carbono = 1 tonelada de CO₂</p>
                     </div>
                 </div>
                 
@@ -273,12 +272,12 @@ const UI = {
                 <div class="carbon-credits__card">
                     <div class="carbon-credits__card-header">
                         <span class="carbon-credits__icon">💰</span>
-                        <h3 class="carbon-credits__card-title">Custo Estimado</h3>
+                        <h3 class="carbon-credits__card-title">Investimento Estimado</h3>
                     </div>
                     <div class="carbon-credits__card-body">
                         <p class="carbon-credits__value">${this.formatCurrency(creditsData.price.average)}</p>
                         <p class="carbon-credits__helper">
-                            Variação: ${this.formatCurrency(creditsData.price.min)} - ${this.formatCurrency(creditsData.price.max)}
+                            Faixa de mercado: ${this.formatCurrency(creditsData.price.min)} a ${this.formatCurrency(creditsData.price.max)}
                         </p>
                     </div>
                 </div>
@@ -286,11 +285,11 @@ const UI = {
             
             <div class="carbon-credits__footer">
                 <p>
-                    A compensação de carbono é uma forma de neutralizar suas emissões investindo em projetos 
-                    ambientais como reflorestamento, energia renovável ou captura de metano.
+                    A compensação de carbono é uma estratégia para neutralizar emissões inevitáveis, investindo em
+                    projetos certificados de reflorestamento, energia renovável e captura de carbono.
                 </p>
                 <a href="https://www.google.com/search?q=comprar+creditos+de+carbono+brasil" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
-                    Saiba onde compensar ↗
+                    Conhecer plataformas de compensação ↗
                 </a>
             </div>
         `;

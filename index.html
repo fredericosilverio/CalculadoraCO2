@@ -16,26 +16,26 @@
 <body>
     <header class="header">
         <h1 class="header__title">🌿 Calculadora de Emissão de CO₂</h1>
-        <p class="header__subtitle">Calcule as emissões de CO₂ das suas viagens e contribua para um planeta mais
-            sustentável</p>
+        <p class="header__subtitle">Calcule o impacto ambiental das suas viagens e descubra como reduzir sua pegada de
+            carbono de forma inteligente</p>
     </header>
 
     <main class="main">
         <form id="calculator-form" class="calculator-form">
             <div class="form-group">
-                <label for="origin" class="form-group__label">Origem</label>
+                <label for="origin" class="form-group__label">Cidade de Origem</label>
                 <div class="input-wrapper">
                     <input type="text" id="origin" class="form-group__input" list="cities-list"
-                        placeholder="Digite a cidade de origem" required>
+                        placeholder="Ex: São Paulo - SP" required autocomplete="off">
                     <span class="input-icon">📍</span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="destination" class="form-group__label">Destino</label>
+                <label for="destination" class="form-group__label">Cidade de Destino</label>
                 <div class="input-wrapper">
                     <input type="text" id="destination" class="form-group__input" list="cities-list"
-                        placeholder="Digite a cidade de destino" required>
+                        placeholder="Ex: Rio de Janeiro - RJ" required autocomplete="off">
                     <span class="input-icon">🏁</span>
                 </div>
             </div>
@@ -43,23 +43,25 @@
             <datalist id="cities-list"></datalist>
 
             <div class="form-group">
-                <label for="distance" class="form-group__label">Distância (km)</label>
+                <label for="distance" class="form-group__label">Distância do Trajeto (km)</label>
                 <div class="input-wrapper">
-                    <input type="number" id="distance" class="form-group__input" readonly placeholder="0">
+                    <input type="number" id="distance" class="form-group__input" readonly placeholder="Calculando..."
+                        min="1">
                     <span class="input-icon">📏</span>
                 </div>
-                <small class="form-group__helper-text">A distância será preenchida automaticamente</small>
+                <small class="form-group__helper-text">A distância será calculada automaticamente com base na
+                    rota</small>
             </div>
 
             <div class="form-group">
                 <label class="form-group__checkbox">
                     <input type="checkbox" id="manual-distance" class="form-group__checkbox-input">
-                    <span class="form-group__checkbox-label">Inserir distância manualmente</span>
+                    <span class="form-group__checkbox-label">Prefiro informar a distância manualmente</span>
                 </label>
             </div>
 
             <div class="form-group">
-                <label class="form-group__label">Meio de Transporte</label>
+                <label class="form-group__label">Selecione o Meio de Transporte</label>
                 <div class="transport-grid">
                     <label class="transport-grid__option">
                         <input type="radio" name="transport" value="bicycle" class="transport-grid__radio">
@@ -135,7 +137,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="form-submit">Calcular Emissão</button>
+            <button type="submit" class="form-submit">🌱 Calcular Impacto Ambiental</button>
         </form>
 
         <section id="loading" class="loading hidden">
@@ -157,40 +159,38 @@
 
         <!-- Seção de Informações Complementares -->
         <section class="info-section">
-            <h2 class="section-title">Saiba Mais sobre Emissão de CO₂</h2>
+            <h2 class="section-title">Aprofunde seu Conhecimento</h2>
 
             <div class="info-grid">
                 <article class="info-card">
                     <h3>🌍 O que é Pegada de Carbono?</h3>
                     <p>
-                        A pegada de carbono mede a quantidade total de gases de efeito estufa (incluindo dióxido de
-                        carbono e metano)
-                        gerados pelas nossas ações.
+                        A pegada de carbono é uma métrica que quantifica o total de gases de efeito estufa emitidos
+                        direta ou indiretamente por suas atividades. Entender esse conceito é o primeiro passo para
+                        ações mais sustentáveis.
                     </p>
-                    <a href="https://www.wwf.org.br/natureza_brasileira/reducao_de_impactos/pegada_ecologica/"
-                        target="_blank" rel="noopener noreferrer" class="info-link">Ler artigo do WWF ↗</a>
+                    <a href="https://www.ecycle.com.br/pegada-de-carbono/" target="_blank" rel="noopener noreferrer"
+                        class="info-link">Saiba mais no eCycle ↗</a>
                 </article>
 
                 <article class="info-card">
-                    <h3>🌳 Como compensar?</h3>
+                    <h3>🌳 Como Compensar suas Emissões?</h3>
                     <p>
-                        Além de reduzir o consumo, você pode apoiar projetos de reflorestamento e energia limpa para
-                        neutralizar suas emissões inevitáveis.
+                        Além de reduzir o consumo, você pode investir em projetos de reflorestamento, energia renovável
+                        e tecnologias de captura de carbono para neutralizar suas emissões.
                     </p>
                     <a href="https://www.un.org/pt/climatechange/climate-action" target="_blank"
-                        rel="noopener noreferrer" class="info-link">Ações
-                        Climáticas da ONU ↗</a>
+                        rel="noopener noreferrer" class="info-link">Ações Climáticas da ONU ↗</a>
                 </article>
 
                 <article class="info-card">
                     <h3>🚲 Mobilidade Sustentável</h3>
                     <p>
-                        Trocar o carro pela bicicleta ou transporte público em trajetos curtos pode reduzir
-                        drasticamente sua emissão anual.
+                        Optar pela bicicleta, transporte público ou caronas compartilhadas em trajetos urbanos
+                        pode reduzir significativamente sua pegada de carbono anual.
                     </p>
-                    <a href="https://www.ecycle.com.br/mobilidade-urbana/" target="_blank" rel="noopener noreferrer"
-                        class="info-link">Guia eCycle
-                        ↗</a>
+                    <a href="https://www.wribrasil.org.br/noticias/o-que-e-mobilidade-sustentavel" target="_blank"
+                        rel="noopener noreferrer" class="info-link">Guia WRI Brasil ↗</a>
                 </article>
             </div>
         </section>
